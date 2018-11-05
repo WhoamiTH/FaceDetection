@@ -145,16 +145,18 @@
 
                 console.log(emotionArr);
 
-
+                /*
                 var str = '';
                 for (var key in emotionArr)
                 {
                     for (var item in emotionArr[key])
                     {
-                        // str += '<span>' + item + ':' + emotionArr[key][item] + '</span><br />';
                         alert(item + ":" + emotionArr[key][item]);
                     }
-                    
+                }
+                */
+                for (var i=0; i<emotionArr.length; i++) {
+                    alert(emotionArr[i][0] + ":" + emotionArr[i][1]);
                 }
 
                 $("#emotionResult").empty().append(str);
