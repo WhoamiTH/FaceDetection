@@ -169,12 +169,12 @@
 				console.log(emotionArr);
 
 
-				var str = ``;
+				var str = '';
 				for (var key in emotionArr)
 				{
 					for (var item in emotionArr[key])
 					{
-						str = str + `<span>${item}:${emotionArr[key][item]}</span><br />`;
+						str += '<span>' + item + ':' + emotionArr[key][item] + '</span><br />';
 					}
 					
 				}
