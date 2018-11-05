@@ -2,74 +2,74 @@
 
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>WebcamJS Test Page</title>
-	<style type="text/css">
-		body { font-family: Helvetica, sans-serif; }
-		h2, h3 { margin-top:0; }
-		form { margin-top: 15px; }
-		form > input { margin-right: 15px; }
-		#results { float:right; margin:20px; padding:20px; border:1px solid; background:#ccc; }
-	</style>
-	<script src="./jquery-3.3.1.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>WebcamJS Test Page</title>
+    <style type="text/css">
+        body { font-family: Helvetica, sans-serif; }
+        h2, h3 { margin-top:0; }
+        form { margin-top: 15px; }
+        form > input { margin-right: 15px; }
+        #results { float:right; margin:20px; padding:20px; border:1px solid; background:#ccc; }
+    </style>
+    <script src="./jquery-3.3.1.min.js"></script>
 </head>
 <body>
-	
-	
-	<h1>WebcamJS Test Page</h1>
-	<h3>Demonstrates simple 320x240 capture &amp; display</h3>
-	
-	<div id="my_camera"></div>
+    
+    
+    <h1>WebcamJS Test Page</h1>
+    <h3>Demonstrates simple 320x240 capture &amp; display</h3>
+    
+    <div id="my_camera"></div>
 
-	<div id="results">Your captured image will appear here...</div>
+    <div id="results">Your captured image will appear here...</div>
 
-	<div width="200" height="300" style="border: 1px solid blueviolet" id="emotionResult"></div>
-	
-	<!-- First, include the Webcam.js JavaScript Library -->
-	<script type="text/javascript" src="./webcam.min.js"></script>
-	
-	<!-- Configure a few settings and attach camera -->
-	<script language="JavaScript">
-		Webcam.set({
-			width: 400,
-			height: 300,
-			image_format: 'jpeg',
-			jpeg_quality: 90,
+    <div width="200" height="300" style="border: 1px solid blueviolet" id="emotionResult"></div>
+    
+    <!-- First, include the Webcam.js JavaScript Library -->
+    <script type="text/javascript" src="./webcam.min.js"></script>
+    
+    <!-- Configure a few settings and attach camera -->
+    <script language="JavaScript">
+        Webcam.set({
+            width: 400,
+            height: 300,
+            image_format: 'jpeg',
+            jpeg_quality: 90,
             force_flash: false
-		});
-		Webcam.attach( '#my_camera' );
-	</script>
-	
-	<!-- A button for taking snaps -->
-	<form>
-		<input type=button value="Take Snapshot" onClick="take_snapshot()">
-	</form>
-	
-	<!-- Code to handle taking the snapshot and displaying it locally -->
-	<script language="JavaScript">
-		var camera_image = null;
+        });
+        Webcam.attach( '#my_camera' );
+    </script>
+    
+    <!-- A button for taking snaps -->
+    <form>
+        <input type=button value="Take Snapshot" onClick="take_snapshot()">
+    </form>
+    
+    <!-- Code to handle taking the snapshot and displaying it locally -->
+    <script language="JavaScript">
+        var camera_image = null;
 
-		function take_snapshot() {
-			// take snapshot and get image data
-			Webcam.snap( (data_uri) => {
-				// display results in page
-				document.getElementById('results').innerHTML = 
-					'<h2>Here is your image:</h2>' + 
-					'<img src="'+ data_uri +'"/>';
-				console.log(data_uri);
-				camera_image = data_uri;
-				console.log(camera_image);
-				detectImg(camera_image);
-				
-			} );
-		}
+        function take_snapshot() {
+            // take snapshot and get image data
+            Webcam.snap( (data_uri) => {
+                // display results in page
+                document.getElementById('results').innerHTML = 
+                    '<h2>Here is your image:</h2>' + 
+                    '<img src="'+ data_uri +'"/>';
+                console.log(data_uri);
+                camera_image = data_uri;
+                console.log(camera_image);
+                detectImg(camera_image);
+                
+            } );
+        }
 
-		 function detectImg(image) 
+         function detectImg(image) 
         {
-        	let faceConfig = 
-        	{
-				    face_token : '',
-			}
+            let faceConfig = 
+            {
+                    face_token : '',
+            }
             // var r = new FileReader();
             // f = document.getElementById('testImg').files[0];
 
@@ -98,14 +98,14 @@
                 processData: false,
                 contentType: false,
                 success(data) {
-                	console.log(data.faces);
-                	console.log(data.faces[0].face_token);
+                    console.log(data.faces);
+                    console.log(data.faces[0].face_token);
                     faceConfig.face_token = data.faces[0].face_token;
                     analyzeImg(faceConfig); //调用分析图片的函数
                 }
             })
             // $.post(url, data, function(data){
-            // 	console.log(data);
+            //  console.log(data);
             // });
             console.log(789789);
         }
@@ -131,57 +131,33 @@
 
                 for (var key in emotion)
                 {
-                	var tem = {};
-                	tem[key]=emotion[key];
-                	emotionArr.push(tem);
-                	console.log(key);
-                	console.log(emotion[key]);
+                    var tem = (key, emotion[key]);
+                    emotionArr.push(tem);
+                    console.log(key);
                 }
 
                var compare = function (obj1, obj2) {
-                    var val1 = null;
-                    var val2 = null;
-                    
-                    for (var key in obj1){
-                        var val1 = obj1[key];
-                    }
+                    return obj1[1] - obj2[1];
+                }
+                
 
-                    for (var key in obj2) {
-                        var val2 = obj2[key];
-                    };
+                emotionArrs = emotionArr.sort(compare).reverse();
 
-				    if (val1 < val2) 
-				    {
-				        return -1;
-				    } 
-				    else if (val1 > val2) 
-				    {
-				        return 1;
-				    } 
-				    else 
-				    {
-				        return 0;
-				    }            
-				}
-				
-
-				emotionArrs = emotionArr.sort(compare).reverse();
-
-				console.log(emotionArr);
+                console.log(emotionArr);
 
 
-				var str = '';
-				for (var key in emotionArr)
-				{
-					for (var item in emotionArr[key])
-					{
-						// str += '<span>' + item + ':' + emotionArr[key][item] + '</span><br />';
+                var str = '';
+                for (var key in emotionArr)
+                {
+                    for (var item in emotionArr[key])
+                    {
+                        // str += '<span>' + item + ':' + emotionArr[key][item] + '</span><br />';
                         alert(item + ":" + emotionArr[key][item]);
-					}
-					
-				}
+                    }
+                    
+                }
 
-				$("#emotionResult").empty().append(str);
+                $("#emotionResult").empty().append(str);
 
 
 
@@ -203,7 +179,7 @@
             }
         })
     }
-	</script>
-	
+    </script>
+    
 </body>
 </html>
