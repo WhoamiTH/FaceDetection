@@ -23,7 +23,9 @@
 
     <div id="results">Your captured image will appear here...</div>
 
-    <div width="200" height="300" style="border: 1px solid blueviolet" id="emotionResult"></div>
+    <div style="border: 1px solid blueviolet">
+        <ul id="emotionResult"></ul>
+    </div>
     
     <!-- First, include the Webcam.js JavaScript Library -->
     <script type="text/javascript" src="./webcam.min.js"></script>
@@ -41,9 +43,9 @@
     </script>
     
     <!-- A button for taking snaps -->
-    <form>
-        <input type=button value="Take Snapshot" onClick="take_snapshot()">
-    </form>
+    <input type="button" value="Take Snapshot" onClick="take_snapshot()" />
+    <br/>
+    <input type="button" value="Analyse Photo" onClick="detectImg(camera_image)" />
     
     <!-- Code to handle taking the snapshot and displaying it locally -->
     <script language="JavaScript">
@@ -56,17 +58,14 @@
                 document.getElementById('results').innerHTML = 
                     '<h2>Here is your image:</h2>' + 
                     '<img src="'+ data_uri +'"/>';
-                console.log(data_uri);
                 camera_image = data_uri;
-                console.log(camera_image);
                 detectImg(camera_image);
-                
             } );
         }
 
          function detectImg(image) 
         {
-            let faceConfig = 
+            var faceConfig = 
             {
                     face_token : '',
             }
@@ -78,18 +77,16 @@
             // r.onload = function(e) {
             //     document.getElementById('img').src = this.result;
             // }
-            let url = 'https://api-cn.faceplusplus.com/facepp/v3/detect';
+            var url = 'https://api-cn.faceplusplus.com/facepp/v3/detect';
             // let files = $('#testImg').prop('files');
             // let files = document.getElementById('testImg').files;
-            let files = image;
-            let data = new FormData();
+            var files = image;
+            var data = new FormData();
             data.append('api_key', "lBMLedaqs3-_etKVBF-E0SqRGBytfbcT");
             data.append('api_secret', "BbxTK9P1tfP80RIC1ikYGJjkB44WW-f_");
             // data.append('image_file', files[0]);
             data.append('image_base64', files);
-            console.log(data);
 
-            console.log(456456);
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -101,13 +98,12 @@
                     console.log(data.faces);
                     console.log(data.faces[0].face_token);
                     faceConfig.face_token = data.faces[0].face_token;
-                    analyzeImg(faceConfig); //调用分析图片的函数
+                    analyzeImg(faceConfig);
                 }
             })
             // $.post(url, data, function(data){
             //  console.log(data);
             // });
-            console.log(789789);
         }
     function analyzeImg(faceConfig) 
     {
@@ -123,43 +119,31 @@
             },
             success(data) {
                 let attributes = data.faces[0].attributes;
-                console.log(attributes);
-                console.log(attributes.emotion)
                 emotion = attributes.emotion;
 
-                var emotionArr = []
+                var emotionArr = [];
 
                 for (var key in emotion)
                 {
-                    var tem = (key, emotion[key]);
+                    var tem = [key, emotion[key]];
+                    console.log("tem = " +　tem);
                     emotionArr.push(tem);
-                    console.log(key);
                 }
 
                var compare = function (obj1, obj2) {
                     return obj1[1] - obj2[1];
                 }
                 
-
                 emotionArrs = emotionArr.sort(compare).reverse();
 
-                console.log(emotionArr);
-
-                /*
-                var str = '';
-                for (var key in emotionArr)
+                $("#emotionResult").empty()
+                for (var i=0; i<emotionArr.length; i++)
                 {
-                    for (var item in emotionArr[key])
-                    {
-                        alert(item + ":" + emotionArr[key][item]);
-                    }
+                    var key = emotionArr[i][0];
+                    var value = emotionArr[i][1];
+                    $("#emotionResult").append('<li>' + key + ": " + value + '</li>');
                 }
-                */
-                for (var i=0; i<emotionArr.length; i++) {
-                    alert(emotionArr[i][0] + ":" + emotionArr[i][1]);
-                }
-
-                $("#emotionResult").empty().append(str);
+                
 
 
 
